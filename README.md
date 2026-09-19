@@ -1,86 +1,67 @@
 # FlutterFlow Documentation Agent
 
-This repository contains an agent for scraping and processing FlutterFlow documentation, combining official documentation with community insights to provide intelligent assistance.
+A RAG-style assistant that scrapes the official FlutterFlow documentation and community content, stores it in Supabase, and answers questions through a Streamlit chat interface.
 
-## Project Structure
+Built as a side project to help my team at work and to learn how retrieval-augmented generation works end to end.
+
+<!-- ADD SCREENSHOT OF THE CHAT UI HERE -->
+
+## What it does
+
+- Scrapes the official FlutterFlow docs and stores them in Supabase (Postgres)
+- Searches docs using both metadata and content matching (Postgres `pg_trgm`)
+- Combines official documentation with community examples in its answers
+- Runs a LangChain agent with OpenAI models behind a Streamlit chat UI
+
+## Architecture
 
 ```
-.
-├── flutterflow_scraper/    # Main scraper module
-│   ├── src/               # Source code
-│   │   ├── agent.py      # Agent implementation
-│   │   ├── app.py        # Streamlit UI
-│   │   ├── scraper.py    # Documentation scraper
-│   │   └── tools.py      # Search and processing tools
-│   ├── supabase/         # Database setup scripts
-│   └── output/           # Scraper output
-├── tests/                # Test files
-└── requirements.txt      # Project dependencies
+scraper.py  ->  Supabase (documents table)  ->  tools.py (search)  ->  agent.py (LangChain + OpenAI)  ->  app.py (Streamlit)
 ```
 
-## Prerequisites
+| File | Role |
+|---|---|
+| `flutterflow_scraper/src/scraper.py` | Scrapes the FlutterFlow docs |
+| `flutterflow_scraper/src/tools.py` | Search and processing tools |
+| `flutterflow_scraper/src/agent.py` | Agent implementation |
+| `flutterflow_scraper/src/app.py` | Streamlit chat interface |
+| `flutterflow_scraper/supabase/` | SQL setup scripts |
 
-- Python 3.8+
-- Supabase account with a project
-- OpenAI API key
+## Setup
 
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/sahani-deriv/flutterflow-doc-agent.git
-   cd flutterflow-doc-agent
+1. Clone the repo and install dependencies:
    ```
-
-2. Install dependencies:
-   ```bash
+   git clone https://github.com/S-Sahanii0/flutterflow-doc-agent.git
+   cd flutterflow-doc-agent
    pip install -r requirements.txt
    ```
-
-3. Set up environment variables in `.env`:
+2. Create a `.env` file:
    ```
    SUPABASE_URL=your_supabase_url
    SUPABASE_KEY=your_supabase_key
    OPENAI_API_KEY=your_openai_api_key
    ```
-
-## Running the Project
-
-1. **Setup Supabase:**
-   - Create a new Supabase project
-   - Enable pg_trgm extension using `supabase/search_metadata.sql`
-   - Initialize the documents table using `supabase/init.sql`
-
-2. **Run the Documentation Scraper:**
-   ```bash
+3. In Supabase, run `supabase/search_metadata.sql` (enables `pg_trgm`) and `supabase/init.sql` (creates the documents table).
+4. Scrape the docs:
+   ```
    cd flutterflow_scraper
    python src/scraper.py
    ```
-   This will scrape the FlutterFlow documentation and store it in the output directory.
-
-3. **Start the Assistant:**
-   ```bash
-   cd flutterflow_scraper
+5. Start the assistant:
+   ```
    streamlit run src/app.py
    ```
-   The application will be available at `http://localhost:8501`
+   Then open `http://localhost:8501`.
 
-## Features
+## Tech stack
 
-- Smart documentation search with metadata and content matching
-- Community integration for real-world examples
-- Modern chat interface built with Streamlit
-- Efficient data storage and retrieval using Supabase
+Python 3.8+, LangChain, OpenAI API, Supabase, Streamlit, BeautifulSoup, requests
 
-## Dependencies
+## Notes
 
-- langchain, langchain-openai, langchain-community: For agent orchestration
-- supabase: Database integration
-- streamlit: Web interface
-- beautifulsoup4: Web scraping
-- python-dotenv: Environment management
-- requests: HTTP client
+- This project only uses publicly available FlutterFlow documentation. Check FlutterFlow's terms before scraping at scale.
+- This is a small side project, not a production system.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT. See the LICENSE file.
