@@ -30,14 +30,12 @@ class FlutterFlowAgent:
         # Initialize embeddings
         self.embeddings = OpenAIEmbeddings(
             api_key=openai_api_key,
-            base_url="https://litellm.deriv.ai/v1",
             model="text-embedding-3-small"
         )
         
         # Initialize LLM
         self.llm = ChatOpenAI(
             api_key=openai_api_key,
-            base_url="https://litellm.deriv.ai/v1",
             model="gpt-4o",
             temperature=0.3
         )

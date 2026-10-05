@@ -32,7 +32,7 @@ class FlutterFlowScraper:
         openai_api_key = env_vars.get("OPENAI_API_KEY")
         if not openai_api_key:
             raise ValueError("OPENAI_API_KEY not found in .env file")
-        self.openai_client = AsyncOpenAI(api_key=openai_api_key, base_url="https://litellm.deriv.ai/v1")
+        self.openai_client = AsyncOpenAI(api_key=openai_api_key)
 
         # Initialize Supabase client
         self.supabase_url = env_vars.get("SUPABASE_URL")
