@@ -79,19 +79,6 @@ Both result sets are returned to the model as text, and the model writes the ans
 - Crawl4AI, requests, lxml, tqdm for ingestion
 - Streamlit
 
-## Limitations
-
-- The agent has one tool. The two search stages always run together, so the model does not choose between them.
-- The metadata stage matches on the title only, and the title is the last segment of the page URL. The generated summary is saved in the `summary` column, but the search function reads `metadata->>'summary'`, which the scraper does not write.
-- The page URL is saved in the `url` column, but both search stages look for it inside `metadata`. Results therefore carry the docs home page URL instead of the page URL.
-- Each page is embedded whole. There is no chunking or truncation.
-- The 0.7 similarity cutoff and the limit of 3 are hard-coded in SQL. The cutoff has not been tuned or evaluated.
-- No vector or trigram index is created, so both searches scan the whole table.
-- The scraper only inserts. Running it again creates duplicate rows, and there is no update or delete path for changed docs.
-- The crawl skip list (`/tags/`, `/blog/`, `/troubleshooting/`) is hard-coded. The scraper does not fetch `robots.txt`.
-- Conversation memory is an unbounded in-process buffer. One agent instance is cached for the whole app, so all browser sessions share it and it is lost on restart.
-- Responses are not streamed. There are no tests and no answer-quality evaluation.
-
 ## Notes
 
 - This project only uses publicly available FlutterFlow documentation. Check FlutterFlow's terms before scraping at scale.
